@@ -1,0 +1,22 @@
+---
+title: "PeerAssessment1"
+author: "A. E. Bodden"
+date: "Saturday, February 14, 2015"
+output: html_document
+---
+
+read the activity.csv table
+
+```{r, echo=TRUE}
+library(knitr)
+rdata <- read.csv("activity.csv",header=T,sep=",")
+summary(rdata)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+
