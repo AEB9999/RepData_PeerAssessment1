@@ -5,18 +5,34 @@ date: "Saturday, February 14, 2015"
 output: html_document
 ---
 
-read the activity.csv table
-
+###Read the activity.csv and produce a histogram of steps taken per day
 ```{r, echo=TRUE}
 library(knitr)
 rdata <- read.csv("activity.csv",header=T,sep=",")
-summary(rdata)
+xdata = aggregate(steps ~ date, data=rdata, FUN = sum )
+hist(xdata$steps, xlab= "number of steps", main = "Histogram of Steps taken per day", breaks = 60)
 ```
 
-You can also embed plots, for example:
+###Calculate and report the mean and median of the total number of steps taken per day 
 
-```{r, echo=FALSE}
-plot(cars)
+```{r, echo=T}
+meandata = aggregate(steps ~ date, data=rdata, FUN = mean )
+hist(meandata$steps, xlab= "number of steps", main = "Histogram of mean of the total Steps taken per day", breaks = 60)
+meandata
+
+mediandata = aggregate(steps ~ date, data=rdata, FUN = median )
+hist(mediandata$steps, xlab= "number of steps", main = "Histogram of the median of the Steps taken per day", breaks = 60)
+mediandata
+```
+###Show the avgerage steps per 5 minute ionterval across all days
+
+```{r, echo=T}
+library(ggplot2)
+xydata = aggregate(steps ~ interval, data=rdata, FUN = mean )
+qplot(x=interval, y=steps, data=xydata, geom = "path", xlab= "5 minute intervals", main = "Avg Number of Steps per 5 min interval across all day")
 ```
 
-
+###Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r, echo=T}
+xydata[order(xydata$steps, decreasing=T)[1],]
+```
