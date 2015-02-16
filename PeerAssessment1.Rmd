@@ -2,7 +2,10 @@
 title: "PeerAssessment1"
 author: "A. E. Bodden"
 date: "Saturday, February 14, 2015"
-output: html_document
+output:
+  html_document:
+    fig_caption: yes
+    keep_md: yes
 ---
 
 ###Read the activity.csv and produce a histogram of steps taken per day
