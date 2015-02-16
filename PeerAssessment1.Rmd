@@ -117,6 +117,6 @@ fixedrdata$wd <- as.factor(weekdays(as.Date(fixedrdata$date)))
 
 levels(fixedrdata$wd) <- c("weekday","weekday","weekday","weekday","weekday","weekend","weekend")
 xydata = fixedrdata
-xydata = aggregate(steps ~ interval, data=fixedrdata, FUN = mean )
-qplot(x=interval, y=steps, data=xydata, geom = "path", xlab= "5 minute intervals", main = "(imputing) Avg Number of Steps per 5 min interval across all day")
+xydata = aggregate(steps ~ interval + wd, data=fixedrdata, FUN = mean )
+qplot(x=interval, y=steps, data=xydata, geom = "path", xlab= "5 minute intervals", main = "(imputing) Avg Number of Steps per 5 min interval across all day",facets = wd~.)
 ```
