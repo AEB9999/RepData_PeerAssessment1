@@ -18,13 +18,15 @@ hist(xdata$steps, xlab= "number of steps", main = "Histogram of Steps taken per 
 ```{r, echo=T}
 meandata = aggregate(steps ~ date, data=rdata, FUN = mean )
 hist(meandata$steps, xlab= "number of steps", main = "Histogram of mean of the total Steps taken per day", breaks = 60)
+
 meandata
 
 mediandata = aggregate(steps ~ date, data=rdata, FUN = median )
 hist(mediandata$steps, xlab= "number of steps", main = "Histogram of the median of the Steps taken per day", breaks = 60)
+
 mediandata
 ```
-###Show the avgerage steps per 5 minute ionterval across all days
+###Show the average steps per 5 minute interval across all days
 
 ```{r, echo=T}
 library(ggplot2)
@@ -34,5 +36,87 @@ qplot(x=interval, y=steps, data=xydata, geom = "path", xlab= "5 minute intervals
 
 ###Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 ```{r, echo=T}
-xydata[order(xydata$steps, decreasing=T)[1],]
+maxavgstepinterval <-xydata$interval[order(xydata$steps, decreasing=T)[1]]
+maxavgstepct <-xydata$steps[order(xydata$steps, decreasing=T)[1]]
+
+```
+The 5 minute interval of `r maxavgstepinterval`, has the maximun average number of steps at `r maxavgstepct`.
+
+
+
+###Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r ehco=T}
+totnarows <-sum(is.na(rdata$steps))
+```
+The total number of rows that have an "na" value are `r totnarows`.
+
+####Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+####Create a new dataset that is equal to the original dataset but with the missing data filled in.
+```{r ehco=T}
+suppressWarnings(1)
+fixedrdata <- rdata
+xend <- 1:length(rdata$steps)
+for(i in seq(xend)){
+    if(is.na(rdata$steps[i])) {
+        ind <- grep(rdata$interval[i],xydata$interval)
+        fixedrdata$steps[i] <- xydata$steps[ind]
+     }
+}
+
+```
+
+---
+###Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+---
+xdata = aggregate(steps ~ date, data=fixedrdata, FUN = sum )
+hist(xdata$steps, xlab= "number of steps", main = "Histogram of Steps taken per day", breaks = 60)
+```
+
+###Calculate and report the mean and median of the total number of steps taken per day 
+
+```{r, echo=T}
+meandata = aggregate(steps ~ date, data=fixedrdata, FUN = mean )
+hist(meandata$steps, xlab= "number of steps", main = "Histogram (imputing) of mean of the total Steps taken per day", breaks = 60)
+
+meandata
+
+mediandata = aggregate(steps ~ date, data=fixedrdata, FUN = median )
+hist(mediandata$steps, xlab= "number of steps", main = "Histogram (imputing) of the median of the Steps taken per day", breaks = 60)
+
+mediandata
+```
+###Show the average steps per 5 minute interval across all days
+
+```{r, echo=T}
+library(ggplot2)
+xydata = aggregate(steps ~ interval, data=fixedrdata, FUN = mean )
+qplot(x=interval, y=steps, data=xydata, geom = "path", xlab= "5 minute intervals", main = "(imputing) Avg Number of Steps per 5 min interval across all day")
+```
+
+###Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r, echo=T}
+maxavgstepinterval <-xydata$interval[order(xydata$steps, decreasing=T)[1]]
+maxavgstepct <-xydata$steps[order(xydata$steps, decreasing=T)[1]]
+
+```
+The 5 minute interval of `r maxavgstepinterval`, has the maximun average number of steps at `r maxavgstepct`.
+
+
+
+###Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r ehco=T}
+totnarows <-sum(is.na(fixedrdata$steps))
+```
+The total number of rows that have an "na" value are `r totnarows`.
+
+
+###Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+```{r ehco=T}
+fixedrdata$wd <- as.factor(weekdays(as.Date(fixedrdata$date)))
+
+levels(fixedrdata$wd) <- c("weekday","weekday","weekday","weekday","weekday","weekend","weekend")
+xydata = fixedrdata
+xydata = aggregate(steps ~ interval, data=fixedrdata, FUN = mean )
+qplot(x=interval, y=steps, data=xydata, geom = "path", xlab= "5 minute intervals", main = "(imputing) Avg Number of Steps per 5 min interval across all day")
 ```
